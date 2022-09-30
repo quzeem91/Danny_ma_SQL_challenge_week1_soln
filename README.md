@@ -22,7 +22,7 @@ Danny has shared with you 3 key datasets for this case study:
 You can inspect the entity relationship diagram and example data below.
 ## Entity Relationship Diagram
 
-[!ERD](/assets/images/ERD.jpg)
+[!ERD](./ERD.jpg)
 
 
 ## Case Study Questions
