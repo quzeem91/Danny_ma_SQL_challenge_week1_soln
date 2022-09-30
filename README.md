@@ -29,7 +29,6 @@ You can inspect the entity relationship diagram and example data below.
 
 1. **What is the total amount each customer spent at the restaurant?**
 
-
     SELECT s.customer_id,SUM(m.price)  "total_amt_spent($)"
     FROM dannys_diner.sales s
     JOIN dannys_diner.menu m
