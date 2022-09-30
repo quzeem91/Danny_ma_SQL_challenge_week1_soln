@@ -21,11 +21,14 @@ Danny has shared with you 3 key datasets for this case study:
 * members <br>
 You can inspect the entity relationship diagram and example data below.
 ## Entity Relationship Diagram
+[!ERD](ERD.jpg)
 
 
+## Case Study Questions
 ---
 
-**Query #1**
+1. **What is the total amount each customer spent at the restaurant?**
+
 
     SELECT s.customer_id,SUM(m.price)  "total_amt_spent($)"
     FROM dannys_diner.sales s
@@ -42,14 +45,15 @@ You can inspect the entity relationship diagram and example data below.
 
 ---
 **Query #2**
+**2. How many days has each customer visited the restaurant?**
 
-    WITH CTE1 as (
+    WITH unique_days_count as (
     SElECT DISTINCT s.customer_id ,s.order_date days
     FROM dannys_diner.sales s
     )
     
     SELECT customer_id ,COUNT(days) visitation_count
-    FROM CTE1
+    FROM unique_days_count
     GROUP BY 1
     ORDER BY 1;
 
@@ -60,7 +64,7 @@ You can inspect the entity relationship diagram and example data below.
 | C           | 2                |
 
 ---
-**Query #3**
+**#3 What was the first item from the menu purchased by each customer?**
 
     WITH CTE1 as (
     SELECT DISTINCT s.Customer_id ,s.order_date, m.product_name 
@@ -83,7 +87,7 @@ You can inspect the entity relationship diagram and example data below.
 | C           | ramen        | 2021-01-01T00:00:00.000Z |
 
 ---
-**Query #4**
+
 
     SELECT s.Customer_id , m.product_name,MIN(s.order_date) first_date_order 
     FROM dannys_diner.sales s
