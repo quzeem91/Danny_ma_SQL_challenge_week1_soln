@@ -22,20 +22,21 @@ Danny has shared with you 3 key datasets for this case study:
 You can inspect the entity relationship diagram and example data below.
 ## Entity Relationship Diagram
 
-[!ERD](ERD.jpg)
+![ERD](ERD.jpg)
 
 
 ## Case Study Questions
 ---
 
-1. **What is the total amount each customer spent at the restaurant?**
-
+**1. What is the total amount each customer spent at the restaurant?**
+ ```
     SELECT s.customer_id,SUM(m.price)  "total_amt_spent($)"
     FROM dannys_diner.sales s
     JOIN dannys_diner.menu m
     ON m.product_id=s.product_id
     GROUP BY 1
     ORDER BY 2 DESC;
+```
 
 | customer_id | total_amt_spent($) |
 | ----------- | ------------------ |
@@ -44,7 +45,7 @@ You can inspect the entity relationship diagram and example data below.
 | C           | 36                 |
 
 ---
-**Query #2**
+
 **2. How many days has each customer visited the restaurant?**
 
     WITH unique_days_count as (
