@@ -276,7 +276,7 @@ You can inspect the entity relationship diagram below.
 
 ## Bonus Questions
 ## Join All The Things
-**Query #12**
+**Bonus Question 1**
 
     SELECT s.customer_id ,s.order_date, m.product_name ,m.price ,
     CASE WHEN s.customer_id=mb.customer_id AND s.order_date>= join_date THEN  'Y'
@@ -307,9 +307,9 @@ You can inspect the entity relationship diagram below.
 | C           | 2021-01-07T00:00:00.000Z | ramen        | 12    | N       |
 
 ---
-**Query #13**
+**Bonus Question 2**
 
-    WITH CTE1 as (
+    WITH member_ranking as (
     SELECT s.customer_id ,s.order_date, m.product_name ,m.price ,
     CASE WHEN s.customer_id=mb.customer_id AND s.order_date>= join_date THEN  'Y'
     ELSE 'N' END as Members 
@@ -319,15 +319,15 @@ You can inspect the entity relationship diagram below.
     LEFT JOIN dannys_diner.members mb
     ON  mb.customer_id=s.customer_id
     ORDER By 1 , 2)
-    
-    SELECT CTE1.customer_id ,cte1.order_date,cte1.product_name,cte1.Price ,cte1.members ,
-    CASE WHEN CTE1.customer_id=mb.customer_id AND CTE1.order_date>= mb.join_date 
-    THEN  DENSE_RANK() OVER (PARTITION BY CTE1.customer_id,CTE1.members ORDER BY CTE1.order_date ) END as Ranking
-    
-    
-    FROM CTE1
+
+    SELECT m.customer_id ,m.order_date,m.product_name,m.Price ,m.members ,
+    CASE WHEN m.customer_id=mb.customer_id AND m.order_date>= mb.join_date 
+    THEN  DENSE_RANK() OVER (PARTITION BY m.customer_id,m.members ORDER BY m.order_date ) END as Ranking
+
+    --DENSE_RANK() OVER (PARTITION BY customer_id,members ORDER BY order_date ) as Ranking 
+    FROM member_ranking m
     LEFT JOIN dannys_diner.members mb
-    ON  mb.customer_id=CTE1.customer_id;
+    ON  mb.customer_id=m.customer_id 
 
 | customer_id | order_date               | product_name | price | members | ranking |
 | ----------- | ------------------------ | ------------ | ----- | ------- | ------- |
@@ -350,3 +350,6 @@ You can inspect the entity relationship diagram below.
 ---
 
 [View on DB Fiddle](https://www.db-fiddle.com/f/uthSoEVxg4heTzzgtTxU2y/0)
+<br>
+
+Thanks for taking your time in going through my solution for danny_ma SQL challenge week 1 . 
