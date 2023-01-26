@@ -1,5 +1,5 @@
 # Danny_ma_SQL_challenge_week1_soln
-week 1 solution of Danny_ma's 8 weeks SQL challenge. Solution contains Beautiful written  SQL statements with easy readability.
+My solution to Danny_ma's 8 weeks SQL challenge,Case Study 1. Solution contains Aggregate functions ,Window Functions ,JOINS and Common Table Expressions with easy readability.<br><br>
 ![temp](https://8weeksqlchallenge.com/images/case-study-designs/1.png)
 
 ## Introduction
@@ -49,7 +49,7 @@ You can inspect the entity relationship diagram below.
 **2. How many days has each customer visited the restaurant?**
 
     WITH unique_days_count as (
-    SElECT DISTINCT s.customer_id ,s.order_date days
+    SELECT DISTINCT s.customer_id ,s.order_date days
     FROM dannys_diner.sales s
     )
     
@@ -65,7 +65,7 @@ You can inspect the entity relationship diagram below.
 | C           | 2                |
 
 ---
-**#3 What was the first item from the menu purchased by each customer?**
+**3 What was the first item from the menu purchased by each customer?**
 
 
     WITH  first_order_date as (
@@ -76,7 +76,7 @@ You can inspect the entity relationship diagram below.
     GROUP BY 1
     ORDER BY 1
     )
-    SELECT Distinct  s.Customer_id ,m.product_name, s.order_date date_of_first_order
+    SELECT Distinct  s.Customer_id , m.product_name, s.order_date date_of_first_order
     FROM dannys_diner.sales s
     JOIN dannys_diner.menu m
     ON m.product_id = s.product_id
@@ -106,7 +106,7 @@ You can inspect the entity relationship diagram below.
     LIMIT 1 
     )
     
-    SELECT s.customer_id,m.product_name ,COUNT(m.product_name)
+    SELECT s.customer_id, m.product_name , COUNT(m.product_name)
     FROM dannys_diner.sales s
     JOIN dannys_diner.menu m
     ON s.product_id=m.product_id
@@ -124,7 +124,7 @@ You can inspect the entity relationship diagram below.
 **5. Which item was the most popular for each customer?**
 
     WITH customer_item_count as ( 
-    SELECT s.customer_id ,m.product_name, COUNT(m.product_name) popularity_count
+    SELECT s.customer_id , m.product_name, COUNT(m.product_name) popularity_count
     FROM dannys_diner.sales s
     JOIN dannys_diner.menu m
     ON s.product_id=m.product_id
@@ -155,7 +155,7 @@ You can inspect the entity relationship diagram below.
 **6. Which item was purchased first by the customer after they became a member?**
 
     WITH members_order as (
-    SELECT mb.Customer_id,m.product_name ,s.order_date
+    SELECT mb.Customer_id, m.product_name , s.order_date
     FROM dannys_diner.sales s
     JOIN dannys_diner.menu m
     ON s.product_id=m.product_id
@@ -183,7 +183,7 @@ You can inspect the entity relationship diagram below.
 **7. Which item was purchased just before the customer became a member?**
 
     WITH members_order_before_becoming_members as (
-    SELECT mb.Customer_id,m.product_name ,s.order_date
+    SELECT mb.Customer_id, m.product_name ,s.order_date
     FROM dannys_diner.sales s
     JOIN dannys_diner.menu m
     ON s.product_id=m.product_id
@@ -194,7 +194,7 @@ You can inspect the entity relationship diagram below.
     FROM members_order_before_becoming_members 
     GROUP BY 1 
     )
-    SELECT l.customer_id ,m.product_name, l.order_date last_order_date_as_a_non_member
+    SELECT l.customer_id , m.product_name, l.order_date last_order_date_as_a_non_member
     FROM dannys_diner.sales s
     JOIN last_order_date_as_a_non_member l 
     ON l.customer_id=s.customer_id AND l.order_date=s.order_date
@@ -211,7 +211,7 @@ You can inspect the entity relationship diagram below.
 ---
 **8. What is the total items and amount spent for each member before they became a member?**
 
-    SELECT s.Customer_id,SUM(m.price) "total_amt_Spent_before_becoming_a_member($)",  COUNT(m.product_id) number_of_orders
+    SELECT s.Customer_id, SUM(m.price) "total_amt_Spent_before_becoming_a_member($)", COUNT(m.product_id) number_of_orders
     FROM dannys_diner.sales s
     JOIN dannys_diner.menu m
     ON s.product_id=m.product_id
@@ -228,13 +228,15 @@ You can inspect the entity relationship diagram below.
 ---
 **9.  If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?**
 
-    WITH customer_points as(SELECT s.customer_id,CASE WHEN lower(m.product_name)='sushi' Then (m.price)*20 
-    						ELSE  price*10 END AS points
+    WITH customer_points as(
+    SELECT s.customer_id, 
+    CASE WHEN lower(m.product_name)='sushi' Then (m.price)*20 
+    					ELSE  price*10 END AS points
     from dannys_diner.sales s
     JOIN dannys_diner.menu m 
     ON s.product_id=m.product_id)
     
-    SELECT customer_id ,SUM(points) total_points
+    SELECT customer_id , SUM(points) total_points
     FROM customer_points
     GROUP BY 1 
     ORDER BY  1 ;
@@ -249,20 +251,20 @@ You can inspect the entity relationship diagram below.
 **10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?**
 
     WITH members_jan_order as (
-    SELECT s.customer_id , m.product_name,m.price ,s.order_date ,mb.join_date,(mb.join_date + integer '6')  first_week_order_date_as_a_member
+    SELECT s.customer_id , m.product_name, m.price, s.order_date , mb.join_date, (mb.join_date + integer '6')  first_week_order_date_as_a_member
     FROM dannys_diner.sales s
     JOIN dannys_diner.menu m
     ON s.product_id=m.product_id
     JOIN dannys_diner.members mb
     ON  mb.customer_id=s.customer_id and (s.order_date >= mb.join_date AND  s.order_date < '2021-02-01')
      ), 
-    members_jan_points as (SELECT customer_id , product_name,price,order_date ,join_date , 
+    members_jan_points as (SELECT customer_id, product_name, price, order_date, join_date , 
        CASE WHEN order_date <= first_week_order_date_as_a_member  THEN 20 * price 
        WHEN order_date >first_week_order_date_as_a_member and lower(product_name)='sushi' THEN  20 * price 
        ELSE price *10 END as points 
        FROM members_jan_order )
     
-    SELECT customer_id ,SUM(points) total_january_points
+    SELECT customer_id, SUM(points) total_january_points
     FROM members_jan_points
     GROUP BY 1
     ORDER BY 1;
@@ -278,7 +280,7 @@ You can inspect the entity relationship diagram below.
 ## Join All The Things
 **Bonus Question 1**
 
-    SELECT s.customer_id ,s.order_date, m.product_name ,m.price ,
+    SELECT s.customer_id, s.order_date, m.product_name , m.price ,
     CASE WHEN s.customer_id=mb.customer_id AND s.order_date>= join_date THEN  'Y'
     ELSE 'N' END as Members 
     FROM dannys_diner.sales s
@@ -320,11 +322,9 @@ You can inspect the entity relationship diagram below.
     ON  mb.customer_id=s.customer_id
     ORDER By 1 , 2)
 
-    SELECT m.customer_id ,m.order_date,m.product_name,m.Price ,m.members ,
-    CASE WHEN m.customer_id=mb.customer_id AND m.order_date>= mb.join_date 
+    SELECT m.customer_id , m.order_date, m.product_name, m.Price , m.members,
+    CASE WHEN m.customer_id=mb.customer_id AND m.order_date>=mb.join_date 
     THEN  DENSE_RANK() OVER (PARTITION BY m.customer_id,m.members ORDER BY m.order_date ) END as Ranking
-
-    --DENSE_RANK() OVER (PARTITION BY customer_id,members ORDER BY order_date ) as Ranking 
     FROM member_ranking m
     LEFT JOIN dannys_diner.members mb
     ON  mb.customer_id=m.customer_id 
@@ -349,7 +349,7 @@ You can inspect the entity relationship diagram below.
 
 ---
 
-[View on DB Fiddle](https://www.db-fiddle.com/f/uthSoEVxg4heTzzgtTxU2y/0)
+
 <br>
 
 Thanks for taking your time in going through my solution for danny_ma SQL challenge week 1 . 
